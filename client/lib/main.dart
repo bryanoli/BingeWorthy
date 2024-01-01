@@ -1,6 +1,8 @@
 import 'package:client/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import './screens/dashboard.dart';
 import './authentication/login.dart';
 import './authentication/register.dart';
 
@@ -29,7 +31,30 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
       },
-      home: const Login(),
+      home: AuthStateObserver(),
+    );
+  }
+}
+
+class AuthStateObserver extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // You can show a loading indicator if needed
+          return const CircularProgressIndicator();
+        } else {
+          final isUserSignedIn = snapshot.hasData;
+          // Depending on the authentication state, navigate to the corresponding screen
+          if (isUserSignedIn) {
+            return Dashboard();
+          } else {
+            return Login();
+          }
+        }
+      },
     );
   }
 }
