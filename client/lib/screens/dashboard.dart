@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/movie.dart';
 import '../api/api.dart';
 import '../components/carousel_builder.dart';
+import '../components/custom_searchbar.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -60,11 +61,12 @@ class _DashboardState extends State<Dashboard> {
               title: Text('Profile'),
             ),
             const ListTile(
-              title: Text('History'),
+              leading: Icon(Icons.list),
+              title: Text('Bingelist'),
             ),
             ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
               onTap: () {
                 signOut();
               },
@@ -83,12 +85,7 @@ class _DashboardState extends State<Dashboard> {
             floating: true,
             expandedHeight: 200,
             actions: [
-              IconButton(
-                onPressed: () {
-                  print('Search icon tapped');
-                },
-                icon: const Icon(Icons.search),
-              ),
+              CustomSearchBar(),
             ],
           ),
           SliverList(

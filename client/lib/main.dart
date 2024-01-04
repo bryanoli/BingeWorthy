@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import './screens/dashboard.dart';
 import './authentication/login.dart';
 import './authentication/register.dart';
+import './screens/movie_bio.dart';
 
 
 void main() async{
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
+        '/movieBio': (context) => const MovieBio(),
       },
       home: AuthStateObserver(),
     );

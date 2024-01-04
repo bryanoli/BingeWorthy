@@ -163,14 +163,16 @@ class _CustomFormState extends State<CustomForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(onPressed: (){
                     Navigator.pushNamed(context, '/register');
-                  }, child: const Text('Don\'t have an account? Register here!')),
+                  }, child: const Text('Don\'t have an account? Register here!', 
+                  style: TextStyle(color: Colors.black,fontSize: 20.0))),
                 ),
               if (widget.formType == FormType.register)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(onPressed: (){
                     Navigator.pushNamed(context, '/login');
-                  }, child: const Text('Already have an account? Login here!')),
+                  }, child: const Text('Already have an account? Login here!', 
+                  style: TextStyle(color: Colors.black, fontSize: 20),)),
                 ),
             ],
           ),
@@ -195,7 +197,7 @@ class _CustomFormState extends State<CustomForm> {
         const Padding(
           padding: EdgeInsets.all(8.0),
           ),
-        Text(label),
+        Text(label, style: const TextStyle(color: Colors.black,fontSize: 20.0)),
         TextFormField(
           keyboardType: keyboardType,
           controller: controller,
