@@ -22,10 +22,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+      color: Color.fromARGB(255, 5, 131, 185),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: Color.fromARGB(255, 30, 30, 30),
       ),
       routes: {
         '/login': (context) => const Login(),
