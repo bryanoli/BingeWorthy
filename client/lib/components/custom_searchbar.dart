@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:client/api/api.dart'; // Import your Api class
 import 'package:client/models/movie.dart'; // Import your Movie class
 import 'package:client/constants.dart';
+import 'package:client/screens/movie_bio.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final Api api = Api();
@@ -50,7 +51,7 @@ class CustomSearchBar extends StatelessWidget {
               ),
               title: Text(movie.title),
               onTap: () {
-                Navigator.pushNamed(context, '/movieBio', arguments: movie);
+                MovieBio().showPopUp(context, movie);
               },
             );
           });

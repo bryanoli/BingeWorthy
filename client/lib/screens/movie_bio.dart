@@ -2,52 +2,61 @@ import 'package:flutter/material.dart';
 import '../models/movie.dart';
 import '../constants.dart';
 
-class MovieBio extends StatelessWidget {
-  const MovieBio({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    // Retrieve the movie details passed as arguments
-    final Movie movie = ModalRoute.of(context)?.settings.arguments as Movie;
-
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 200,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(movie.title),
-            background: Image.network(
-              '${Constants.imagePath}${movie.backDropPath}',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Overview',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      movie.overView,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    // Add more details as needed
-                  ],
+class MovieBio {
+  void showPopUp(BuildContext context,  Movie movie) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      final screenSize = MediaQuery.of(context).size;
+      return AlertDialog(
+        title: Text(movie.title),
+        content: SizedBox(
+          width: screenSize.width * 0.5,
+          height: screenSize.height * 0.5,
+          child: Column(
+            children:[
+              Image.network(
+                '${Constants.imagePath}${movie.backDropPath}',
+                fit: BoxFit.cover,
+              ),
+              Center(
+                child: SizedBox(
+                  child: Padding(padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Text('Rating: ${movie.voteAverage}'),
+                      const SizedBox(width: 8),
+                      Text('Release Date: ${movie.releaseDate}'),
+                    ],
+                  ),
+                  ),
                 ),
               ),
+              const SizedBox(height: 8),
+              Flexible(
+                child: SizedBox(
+                  height: screenSize.height * 0.8,
+                  width: screenSize.width * 0.3,
+                  child: SingleChildScrollView(
+                    child: Text(movie.overView)),),
+              ),
             ],
-          ),
+          ), 
         ),
-      ],
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {}, 
+            icon: const Icon(Icons.favorite_border),),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the pop-up
+            },
+            child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
