@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../database/database.dart';
 
 enum FormType { login, register }
 
@@ -13,6 +14,7 @@ class CustomForm extends StatefulWidget {
 }
 
 class _CustomFormState extends State<CustomForm> {
+  final DataBaseService dataBaseService = DataBaseService();
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -23,22 +25,32 @@ class _CustomFormState extends State<CustomForm> {
       TextEditingController();
 
   Future<void> _submitForm() async {
-    final currentContext = context;
+    final NavigatorState navigator = Navigator.of(context);
     if (formKey.currentState?.validate() ?? false) {
       try {
+        UserCredential? userCredential;
         if (widget.formType == FormType.login) {
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+          userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: emailController.text,
             password: passwordController.text,
           );
         } else {
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailController.text,
             password: passwordController.text,
           );
+          await dataBaseService.saveUserToDatabase(
+            userCredential.user?.uid,
+            emailController.text,
+            firstNameController.text,
+            lastNameController.text,
+            userNameController.text,
+            [],
+          );
           // Additional logic for saving user details to a database can be added here
-          Navigator.pushReplacementNamed(currentContext, '/login');
+          navigator.pushReplacementNamed('/login');
         }
+        navigator.pushReplacementNamed('/dashboard');
         print('Form submitted!');
       } catch (error) {
         print('Error submitting form: $error');
@@ -199,6 +211,7 @@ class _CustomFormState extends State<CustomForm> {
           ),
         Text(label, style: const TextStyle(color: Colors.black,fontSize: 20.0)),
         TextFormField(
+          style: const TextStyle(color: Colors.black,fontSize: 20.0),
           keyboardType: keyboardType,
           controller: controller,
           validator: validator,
