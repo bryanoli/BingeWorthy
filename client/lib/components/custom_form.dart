@@ -31,16 +31,17 @@ class _CustomFormState extends State<CustomForm> {
         UserCredential? userCredential;
         if (widget.formType == FormType.login) {
           userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text,
+            email: emailController.text.toString(),
+            password: passwordController.text.toString(),
           );
         } else {
           userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text,
+            email: emailController.text.toString(),
+            password: passwordController.text.toString(),
           );
+          String uid = userCredential.user?.uid ?? '';
           await dataBaseService.saveUserToDatabase(
-            userCredential.user?.uid,
+            uid,
             emailController.text,
             firstNameController.text,
             lastNameController.text,

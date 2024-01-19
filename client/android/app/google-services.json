@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "390548217658",
+    "firebase_url": "https://bingeworthy-bw-default-rtdb.firebaseio.com",
     "project_id": "bingeworthy-bw",
     "storage_bucket": "bingeworthy-bw.appspot.com"
   },

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/movie.dart';
 import '../constants.dart';
-
+import '../database/database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MovieBio {
+  User? user;
+
+  MovieBio() {
+    // Initialize the user property with the current user
+    user = FirebaseAuth.instance.currentUser;
+  }
   void showPopUp(BuildContext context,  Movie movie) {
   showDialog(
     context: context,
@@ -46,7 +53,12 @@ class MovieBio {
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () {}, 
+            onPressed: () async{
+              final NavigatorState navigator = Navigator.of(context);
+              DataBaseService databaseService = DataBaseService();
+              await databaseService.addUserFavoriteMovie(movie.title);
+              navigator.pop(); // Close the pop-up
+            }, 
             icon: const Icon(Icons.favorite_border),),
           TextButton(
             onPressed: () {

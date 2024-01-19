@@ -15,16 +15,17 @@ class UserModel {
     required this.favoritesMovies,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> data) {
+  factory UserModel.fromJson(Map<String, dynamic>? data) {
     return UserModel(
-      id: data['id'],
-      email: data['email'],
-      firstName: data['firstName'],
-      lastName: data['lastName'],
-      userName: data['userName'],
-      favoritesMovies: List<String>.from(data['favoritesMovies']),
+      id: data?['id'] ?? '',
+      email: data?['email'] ?? '',
+      firstName: data?['firstName'] ?? '',
+      lastName: data?['lastName'] ?? '',
+      userName: data?['userName'] ?? '',
+      favoritesMovies: List<String>.from(data?['favoritesMovies'] ?? []),
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

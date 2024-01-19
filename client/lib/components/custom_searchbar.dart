@@ -27,7 +27,7 @@ class CustomSearchBar extends StatelessWidget {
         );
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) async {
-        if (controller.text == null || controller.text.isEmpty) {
+        if (controller.text.isEmpty) {
           return const <Widget>[]; // Return an empty list for no suggestions
         }
 
