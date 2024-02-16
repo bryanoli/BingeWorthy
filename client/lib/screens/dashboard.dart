@@ -60,9 +60,12 @@ class _DashboardState extends State<Dashboard> {
               leading: Icon(Icons.person),
               title: Text('Profile'),
             ),
-            const ListTile(
+            ListTile(
               leading: Icon(Icons.list),
               title: Text('Bingelist'),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/bingelist');
+              },
             ),
             ListTile(
               leading: const Icon(Icons.logout),

@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import './authentication/login.dart';
 import './authentication/register.dart';
 import './screens/dashboard.dart';
+import './screens/bingelist.dart';
 
 
 void main() async{
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
         '/dashboard': (context) => const Dashboard(),
+        '/bingelist': (context) => const BingeList(),
       },
       home: const Login(),
     );

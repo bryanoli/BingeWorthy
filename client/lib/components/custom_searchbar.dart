@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:client/api/api.dart'; // Import your Api class
-import 'package:client/models/movie.dart'; // Import your Movie class
+import 'package:client/api/api.dart';
+import 'package:client/models/movie.dart';
 import 'package:client/constants.dart';
 import 'package:client/screens/movie_bio.dart';
 
