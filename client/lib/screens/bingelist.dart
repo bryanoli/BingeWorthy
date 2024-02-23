@@ -3,6 +3,10 @@ import '../database/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../components/custom_searchbar.dart';
 import '../constants.dart';
+import '../api/api.dart';
+import '../models/movie.dart';
+import 'package:reorderables/reorderables.dart';
+
 
 class BingeList extends StatefulWidget {
   const BingeList({Key? key}) : super(key: key);
@@ -15,6 +19,9 @@ class _BingeListState extends State<BingeList> {
   late String? userId;
   late DataBaseService databaseService;
   late List<String> userFavorites;
+  // final ScrollController _scrollController = ScrollController();
+  Api api = Api();
+
 
   @override
   void initState() {
@@ -23,7 +30,6 @@ class _BingeListState extends State<BingeList> {
     databaseService = DataBaseService();
     userFavorites = [];
 
-    // Fetch user favorites when the widget is initialized
     fetchUserFavorites();
   }
 
@@ -47,13 +53,11 @@ class _BingeListState extends State<BingeList> {
     }
   }
 
-  Future<Map<String, String>> fetchMovieData(String title) async {
-    // Placeholder function to fetch movie data based on the title
-    // You should replace this with your actual logic/API call
-    // Return a map containing at least the title and poster path
+  Future<Map<String, String>> fetchMovieData(String title, ) async {
+    Movie movie = await api.searchMovie(title);
     return {
-      'title': title,
-      'posterPath': 'path/to/placeholder/poster.jpg',
+      'title': movie.title,
+      'posterPath': movie.posterPath,
     };
   }
 
@@ -66,6 +70,21 @@ class _BingeListState extends State<BingeList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'FlutterFlix',
+          style: TextStyle(color: Colors.blue, fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            },
+            icon: const Icon(Icons.home),
+          ),
+          CustomSearchBar(),
+        ],
+      ),
       drawer: Drawer(
         child: ListView(
           children: [
@@ -86,13 +105,13 @@ class _BingeListState extends State<BingeList> {
               title: Text('Profile'),
             ),
             ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Dashboard'),
+              leading: const Icon(Icons.person),
+              title: const Text('Dashboard'),
               onTap: () => Navigator.pushReplacementNamed(context, '/dashboard'),
             ),
             ListTile(
-              leading: Icon(Icons.list),
-              title: Text('Bingelist'),
+              leading: const Icon(Icons.list),
+              title: const Text('Bingelist'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/bingelist');
               },
@@ -107,58 +126,54 @@ class _BingeListState extends State<BingeList> {
           ],
         ),
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            title: const Text(
-              'FlutterFlix',
-              style: TextStyle(color: Colors.blue, fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            pinned: true,
-            floating: true,
-            expandedHeight: 200,
-            actions: [
-              CustomSearchBar(),
-            ],
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return FutureBuilder(
+      body: ReorderableListView(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        children: <Widget>[
+          for (int index = 0; index < userFavorites.length; index += 1)
+            ReorderableDragStartListener(
+              index: index,
+              key: ValueKey(index),
+              child: ListTile(
+                key: ValueKey(index),
+                leading: FutureBuilder(
                   future: fetchMovieData(userFavorites[index]),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator(); // Loading indicator
+                      return const CircularProgressIndicator();
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (snapshot.hasData) {
-                      // Data is available, build the ListTile
                       final Map<String, String> movieData = snapshot.data as Map<String, String>;
-                      return ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: SizedBox(
-                            height: 300,
-                            width: 200,
-                            child: Image.network(
-                              filterQuality: FilterQuality.high,
-                              '${Constants.imagePath}${movieData['posterPath']}',
-                              fit: BoxFit.cover,
-                            ),
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: Image.network(
+                            filterQuality: FilterQuality.high,
+                            '${Constants.imagePath}${movieData['posterPath']}',
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        title: Text('${index + 1}. ${movieData['title']}'),
                       );
                     } else {
-                      return Text('Unknown error occurred');
+                      return const Text('Unknown error occurred');
                     }
                   },
-                );
-              },
-              childCount: userFavorites.length,
+                ),
+                title: Text('${index + 1}. ${userFavorites[index]}'),
+              ),
             ),
-          ),
         ],
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final String movie = userFavorites.removeAt(oldIndex);
+            userFavorites.insert(newIndex, movie);
+          });
+        },
       ),
     );
   }

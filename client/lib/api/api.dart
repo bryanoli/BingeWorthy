@@ -49,8 +49,9 @@ class Api{
     }
   }
 
-Future<List<Movie>> searchMovies(String query) async {
-  final response = await http.get(Uri.parse(searchUrl + query));
+Future<List<Movie>> searchMovies(String? query) async {
+  final encodedQuery = Uri.encodeQueryComponent(query!);
+  final response = await http.get(Uri.parse(searchUrl + encodedQuery));
 
   if (response.statusCode == 200) {
     final decodeData = json.decode(response.body);
@@ -60,6 +61,28 @@ Future<List<Movie>> searchMovies(String query) async {
           .map((movie) => Movie.fromJson(movie))
           .toList();
       return movies;
+    } else {
+      throw Exception('Failed to decode movies data');
+    }
+  } else {
+    throw Exception('Failed to load movies. Status code: ${response.statusCode}');
+  }
+}
+
+Future<Movie> searchMovie(String query) async {
+  final response = await http.get(Uri.parse(searchUrl + query));
+
+  if (response.statusCode == 200) {
+    final decodedData = json.decode(response.body);
+    
+    if (decodedData != null && decodedData['results'] != null) {
+      // Assuming you want to get the first movie from the results
+      final Map<String, dynamic> movieData = (decodedData['results'] as List).first;
+
+      // Creating a single Movie instance from the first result
+      final Movie movie = Movie.fromJson(movieData);
+
+      return movie;
     } else {
       throw Exception('Failed to decode movies data');
     }
