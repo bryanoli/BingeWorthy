@@ -5,7 +5,6 @@ import '../components/custom_searchbar.dart';
 import '../constants.dart';
 import '../api/api.dart';
 import '../models/movie.dart';
-import 'package:reorderables/reorderables.dart';
 
 
 class BingeList extends StatefulWidget {
@@ -22,6 +21,17 @@ class _BingeListState extends State<BingeList> {
   // final ScrollController _scrollController = ScrollController();
   Api api = Api();
 
+  Future<void> updateUserFavoritesOrder(List<String> newOrder) async {
+    try {
+      if (userId != null) {
+        await databaseService.updateUserFavoritesOrder(userId!, newOrder);
+      } else {
+        print('Current user ID is null.');
+      }
+    } catch (error) {
+      print('Error updating user favorites order: $error');
+    }
+  }
 
   @override
   void initState() {
@@ -44,11 +54,9 @@ class _BingeListState extends State<BingeList> {
           userFavorites = favorites;
         });
       } else {
-        // Handle the case where current user ID is null
         print('Current user ID is null.');
       }
     } catch (error) {
-      // Handle error if needed
       print('Error fetching user favorites: $error');
     }
   }
@@ -174,6 +182,38 @@ class _BingeListState extends State<BingeList> {
             userFavorites.insert(newIndex, movie);
           });
         },
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              databaseService.clearUserFavorites(userId!);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Favorites list cleared!'),
+                ),
+              );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => BingeList()),
+              );
+            },
+            child: Icon(Icons.delete),
+          ),
+          SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: () {
+              updateUserFavoritesOrder(userFavorites);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Favorites list updated!'),
+                ),
+              );
+            },
+            child: const Icon(Icons.done),
+          ),
+        ],
       ),
     );
   }

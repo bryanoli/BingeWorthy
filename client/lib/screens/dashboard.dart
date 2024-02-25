@@ -1,3 +1,5 @@
+import 'package:client/database/database.dart';
+import 'package:client/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/movie.dart';
@@ -17,6 +19,7 @@ class _DashboardState extends State<Dashboard> {
   late Future<List<Movie>> trendingMovies;
   late Future<List<Movie>> bingeWorthyMovies;
   late Future<List<Movie>> newReleases;
+  late Future<UserModel?> userFuture;
 
   void signOut() async {
     final currentContext = context;
@@ -36,6 +39,7 @@ class _DashboardState extends State<Dashboard> {
     trendingMovies = Api().getTrendingMovies();
     bingeWorthyMovies = Api().getTopRated();
     newReleases = Api().getNewReleases();
+    userFuture = DataBaseService().getUserFromDatabase();
   }
 
   @override
@@ -44,16 +48,29 @@ class _DashboardState extends State<Dashboard> {
       drawer: Drawer(
         child: ListView(
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue, // Use the same color as the background
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+              child: FutureBuilder<UserModel?>(
+                future: userFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        Text('Welcome, ${snapshot.data!.userName}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+                  return const CircularProgressIndicator();
+                },
               ),
             ),
             const ListTile(
