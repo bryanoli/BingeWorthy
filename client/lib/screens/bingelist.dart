@@ -1,3 +1,4 @@
+import 'package:client/components/menu_drawer.dart';
 import 'package:flutter/material.dart';
 import '../database/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +9,7 @@ import '../models/movie.dart';
 
 
 class BingeList extends StatefulWidget {
-  const BingeList({Key? key}) : super(key: key);
+  const BingeList({super.key});
 
   @override
   State<BingeList> createState() => _BingeListState();
@@ -69,18 +70,12 @@ class _BingeListState extends State<BingeList> {
     };
   }
 
-  void signOut() async {
-    final currentContext = context;
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(currentContext, '/login');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'FlutterFlix',
+          'Bingelist',
           style: TextStyle(color: Colors.blue, fontSize: 24, fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -93,47 +88,7 @@ class _BingeListState extends State<BingeList> {
           CustomSearchBar(),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue, // Use the same color as the background
-              ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            const ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Dashboard'),
-              onTap: () => Navigator.pushReplacementNamed(context, '/dashboard'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.list),
-              title: const Text('Bingelist'),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/bingelist');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                signOut();
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const MenuDrawer(),
       body: ReorderableListView(
         padding: const EdgeInsets.symmetric(horizontal: 40),
         children: <Widget>[
@@ -190,7 +145,7 @@ class _BingeListState extends State<BingeList> {
             onPressed: () {
               databaseService.clearUserFavorites(userId!);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Favorites list cleared!'),
                 ),
               );
@@ -199,9 +154,9 @@ class _BingeListState extends State<BingeList> {
                 MaterialPageRoute(builder: (context) => BingeList()),
               );
             },
-            child: Icon(Icons.delete),
+            child: const Icon(Icons.delete),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           FloatingActionButton(
             onPressed: () {
               updateUserFavoritesOrder(userFavorites);
