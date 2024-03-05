@@ -5,6 +5,7 @@ import './authentication/login.dart';
 import './authentication/register.dart';
 import './screens/dashboard.dart';
 import './screens/bingelist.dart';
+import './screens/worldslist.dart';
 
 
 void main() async{
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const Register(),
         '/dashboard': (context) => const Dashboard(),
         '/bingelist': (context) => const BingeList(),
+        '/worldslist': (context) => const WorldsList(),
       },
       home: const Login(),
     );

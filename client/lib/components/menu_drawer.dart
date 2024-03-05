@@ -54,6 +54,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
               title: Text('Profile'),
             ),
             ListTile(
+              leading: Icon(Icons.public),
+              title: const Text('Worldslist'),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/worldslist');
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.list),
               title: Text('Bingelist'),
               onTap: () {

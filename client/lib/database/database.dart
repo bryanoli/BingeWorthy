@@ -85,4 +85,15 @@ class DataBaseService {
 
     }
   }
+
+  Future<void> getAllUsers() async {
+    try {
+      QuerySnapshot users = await usersCollection.get();
+      for (var user in users.docs) {
+        print('User: ${user.data()}');
+      }
+    } catch (error) {
+      print('Error getting all users: $error');
+    }
+  }
 }

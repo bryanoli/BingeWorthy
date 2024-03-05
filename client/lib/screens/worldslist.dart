@@ -1,20 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:client/components/menu_drawer.dart';
+import 'package:client/database/database.dart';
 
-class _WorldsLiState extends StatefulWidget {
-  const _WorldsLiState({super.key});
+class WorldsList extends StatefulWidget {
+  const WorldsList({super.key});
 
   @override
-  State<_WorldsLiState> createState() => __WorldsLiStateState();
+  State<WorldsList> createState() => _WorldsListState();
 }
 
-class __WorldsLiStateState extends State<_WorldsLiState> {
+class _WorldsListState extends State<WorldsList> {
+
+  late Future<List> usernames;
+  late DataBaseService databaseService;
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      drawer:MenuDrawer(),
-      body: Center(
-        child: Text('Worlds List'),
+    return Scaffold(
+      drawer: const MenuDrawer(),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(
+              'FlutterFlix',
+              style: TextStyle(color: Colors.blue,fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            pinned: true,
+            floating: true,
+            expandedHeight: 200,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/dashboard');
+                },
+                icon: const Icon(Icons.home),
+              ),
+            ],
+          ),
+          FutureBuilder(future: usernames, builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const SliverToBoxAdapter(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            if (snapshot.hasError) {
+              return SliverToBoxAdapter(
+                child: Center(
+                  child: Text('Error fetching data: ${snapshot.error}'),
+                ),
+              );
+            }
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data?[index]),
+                  );
+                },
+                childCount: snapshot.data?.length,
+              ),
+            );
+          }),
+        ],
       ),
     );
   }
