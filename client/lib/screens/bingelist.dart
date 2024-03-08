@@ -19,7 +19,6 @@ class _BingeListState extends State<BingeList> {
   late String? userId;
   late DataBaseService databaseService;
   late List<String> userFavorites;
-  // final ScrollController _scrollController = ScrollController();
   Api api = Api();
 
   Future<void> updateUserFavoritesOrder(List<String> newOrder) async {
@@ -48,7 +47,7 @@ class _BingeListState extends State<BingeList> {
     try {
       if (userId != null) {
         // Fetch user's favorite movies
-        List<String> favorites = await databaseService.getUserFavoritesMovies(userId!);
+        List<String> favorites = await databaseService.getCurrentUserFavoritesMovies(userId!);
 
         // Update the state with the fetched data
         setState(() {
@@ -151,7 +150,7 @@ class _BingeListState extends State<BingeList> {
               );
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => BingeList()),
+                MaterialPageRoute(builder: (context) => const BingeList()),
               );
             },
             child: const Icon(Icons.delete),

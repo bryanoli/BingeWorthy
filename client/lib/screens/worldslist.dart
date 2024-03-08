@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/components/menu_drawer.dart';
 import 'package:client/database/database.dart';
+import 'userbingelist.dart';
 
 class WorldsList extends StatefulWidget {
   const WorldsList({super.key});
@@ -13,6 +14,19 @@ class _WorldsListState extends State<WorldsList> {
 
   late Future<List> usernames;
   late DataBaseService databaseService;
+
+  @override
+  void initState(){
+    super.initState();
+    databaseService = DataBaseService();
+    usernames = databaseService.getAllUsernames();
+  }
+
+  void navigateToUserBingeList(String username){
+    Navigator.push(
+      context, 
+      MaterialPageRoute(builder: (context) => BingeListForUsers(username:username,)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +69,12 @@ class _WorldsListState extends State<WorldsList> {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
+                  final clickedUser = snapshot.data?[index];
                   return ListTile(
-                    title: Text(snapshot.data?[index]),
+                    title: Text(clickedUser),
+                    onTap: () {
+                      navigateToUserBingeList(clickedUser);
+                    },
                   );
                 },
                 childCount: snapshot.data?.length,
